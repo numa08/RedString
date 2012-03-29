@@ -52,7 +52,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ic_action_share=0x7f020006;
         public static final int ic_home=0x7f020007;
         public static final int ic_launcher=0x7f020008;
-        public static final int ic_menu_share=0x7f020009;
+        public static final int ic_menu_more=0x7f020009;
+        public static final int ic_menu_share=0x7f02000a;
     }
     public static final class id {
         public static final int actionbar_compat=0x7f060000;
