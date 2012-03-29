@@ -59,6 +59,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int actionbar_compat_item_refresh=0x7f060003;
         public static final int actionbar_compat_item_refresh_progress=0x7f060002;
         public static final int actionbar_compat_title=0x7f060001;
+        public static final int itemdate_select=0x7f060005;
         public static final int menu_refresh=0x7f060004;
     }
     public static final class layout {
@@ -66,9 +67,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int actionbar_indeterminate_progress=0x7f030001;
         public static final int main=0x7f030002;
     }
+    public static final class menu {
+        public static final int menu=0x7f090000;
+    }
     public static final class string {
         public static final int alternate_title=0x7f070001;
         public static final int app_name=0x7f070000;
+        public static final int menu_date_select=0x7f070006;
         public static final int menu_refresh=0x7f070003;
         public static final int menu_search=0x7f070004;
         public static final int menu_share=0x7f070005;
