@@ -8,6 +8,9 @@
 package jp.numa08.redstring;
 
 public final class R {
+    public static final class array {
+        public static final int date_list=0x7f080000;
+    }
     public static final class attr {
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
@@ -60,7 +63,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int actionbar_compat_item_refresh=0x7f060003;
         public static final int actionbar_compat_item_refresh_progress=0x7f060002;
         public static final int actionbar_compat_title=0x7f060001;
-        public static final int itemdate_select=0x7f060005;
+        public static final int menu_date_select=0x7f060005;
         public static final int menu_refresh=0x7f060004;
     }
     public static final class layout {
@@ -69,7 +72,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int main=0x7f030002;
     }
     public static final class menu {
-        public static final int menu=0x7f090000;
+        public static final int menu=0x7f0a0000;
     }
     public static final class string {
         public static final int alternate_title=0x7f070001;
@@ -81,14 +84,14 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int toggle_title=0x7f070002;
     }
     public static final class style {
-        public static final int ActionBarCompat=0x7f080001;
-        public static final int ActionBarCompatHomeItem=0x7f080007;
-        public static final int ActionBarCompatItem=0x7f080006;
-        public static final int ActionBarCompatItemBase=0x7f080002;
-        public static final int ActionBarCompatProgressIndicator=0x7f080003;
-        public static final int ActionBarCompatTitle=0x7f080005;
-        public static final int ActionBarCompatTitleBase=0x7f080004;
-        public static final int AppTheme=0x7f080000;
+        public static final int ActionBarCompat=0x7f090001;
+        public static final int ActionBarCompatHomeItem=0x7f090007;
+        public static final int ActionBarCompatItem=0x7f090006;
+        public static final int ActionBarCompatItemBase=0x7f090002;
+        public static final int ActionBarCompatProgressIndicator=0x7f090003;
+        public static final int ActionBarCompatTitle=0x7f090005;
+        public static final int ActionBarCompatTitleBase=0x7f090004;
+        public static final int AppTheme=0x7f090000;
     }
     public static final class styleable {
         /** Attributes that can be used with a AppTheme.

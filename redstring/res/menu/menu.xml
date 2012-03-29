@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/itemdate_select" android:orderInCategory="1" android:showAsAction="always"
+    <item android:id="@+id/menu_date_select" android:orderInCategory="1" android:showAsAction="always"
         android:icon="@android:drawable/ic_menu_more" android:title="@string/menu_date_select"></item>
     
 

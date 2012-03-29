@@ -23,4 +23,9 @@
     <string name="menu_search">Search</string>
     <string name="menu_share">Share</string>
     <string name="menu_date_select">日付選択</string>
+    <string-array name="date_list">
+        <item >今日</item>
+        <item >指定日</item>
+        <item >指定月</item>
+    </string-array>
 </resources>
