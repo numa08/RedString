@@ -1,7 +1,8 @@
 package jp.numa08.redstring;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import jp.numa08.actionbarcompat.ActionBarActivity;
 import android.os.Bundle;
@@ -9,8 +10,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+/**
+ * @author numanuma08
+ * 
+ *         起動時に表示するActivity
+ */
 public class TopActivity extends ActionBarActivity {
-	private transient List<String> dateList = new ArrayList<String>();
+	private final transient SimpleDateFormat Date_Format = new SimpleDateFormat(
+			"yyyy年MM月dd日", Locale.JAPAN);
+	private final transient SimpleDateFormat Month_Format = new SimpleDateFormat(
+			"yyyy年MM月", Locale.JAPAN);
+	/**
+	 * 選択されている日付の描画パターン。初期値は”今日”
+	 */
+	private transient DateSelector selectedDate = DateSelector.Today;
 
 	/** Called when the activity is first created. */
 	/*
@@ -21,6 +34,10 @@ public class TopActivity extends ActionBarActivity {
 		super.onCreate(sInstanceState);
 		setContentView(R.layout.main);
 
+		if (selectedDate.equals(DateSelector.Today)) {
+			final Date now = new Date();
+			setTitle(Date_Format.format(now));
+		}
 	}
 
 	/*
@@ -46,7 +63,7 @@ public class TopActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void onDateChanged(int witch) {
+	public void onDateSelected(int witch) {
 
 	}
 }

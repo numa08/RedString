@@ -28,6 +28,6 @@ public class DateSelectListener implements OnClickListener {
 	@Override
 	public void onClick(final DialogInterface dialog, final int which) {
 		// TODO Auto-generated method stub
-		activity.onDateChanged(which);
+		activity.onDateSelected(which);
 	}
 }
