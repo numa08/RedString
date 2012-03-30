@@ -28,4 +28,5 @@
         <item >指定日</item>
         <item >指定月</item>
     </string-array>
+    <string name="add_button">追加</string>
 </resources>

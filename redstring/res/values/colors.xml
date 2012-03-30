@@ -16,4 +16,5 @@
 
 <resources>
     <color name="actionbar_title_color">#224894</color>
+    <color name="text_color">#000000</color>
 </resources>
