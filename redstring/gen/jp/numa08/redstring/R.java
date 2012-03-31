@@ -68,9 +68,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int goods_list=0x7f060007;
         public static final int goods_name=0x7f060005;
         public static final int goods_plice=0x7f060006;
-        public static final int menu_date_select=0x7f06000a;
+        public static final int menu_date_select=0x7f06000b;
         public static final int menu_refresh=0x7f060004;
-        public static final int plice_sum=0x7f060009;
+        public static final int sum_plice=0x7f06000a;
+        public static final int textView1=0x7f060009;
     }
     public static final class layout {
         public static final int actionbar_compat=0x7f030000;
@@ -89,6 +90,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int menu_refresh=0x7f070003;
         public static final int menu_search=0x7f070004;
         public static final int menu_share=0x7f070005;
+        public static final int sum=0x7f070008;
         public static final int toggle_title=0x7f070002;
     }
     public static final class style {

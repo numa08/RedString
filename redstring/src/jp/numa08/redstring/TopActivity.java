@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * @author numanuma08
@@ -49,12 +50,14 @@ public class TopActivity extends ActionBarActivity {
 		}
 		// TODO DBì«Ç›çûÇ›
 		// TODO ï`âÊ
-		List<Goods> goodsList = new ArrayList<Goods>();
+		final List<Goods> goodsList = new ArrayList<Goods>();
 		goodsList.add(new Goods("íãî—", 500));
 		goodListView.setAdapter(new GoodsListAdapter(getApplicationContext(),
 				goodsList));
 		// TODO çáåvÇÃåvéZ
 		// TODO ï\é¶
+		final TextView sumText = (TextView) findViewById(R.id.sum_plice);
+		sumText.setText("500â~");
 	}
 
 	/**
