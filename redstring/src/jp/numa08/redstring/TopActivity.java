@@ -39,7 +39,7 @@ import android.widget.Toast;
  * @author numanuma08 最初に表示されるActivity
  */
 public class TopActivity extends ActionBarActivity {
-	private final transient int MAX_SIZE = 100;
+	private final static transient int MAX_SIZE = 100;
 	private final transient int YESTERDAY = -1;
 	private final transient SimpleDateFormat Date_Format = new SimpleDateFormat(
 			"yyyy/MM/dd", Locale.JAPAN);
