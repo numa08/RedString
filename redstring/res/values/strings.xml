@@ -38,4 +38,6 @@
     <string name="menu_yesterday">昨日へ</string>
     <string name="add_positive_button">追加</string>
     <string name="add_negative_button">キャンセル</string>
+    <string name="when_month_add_button">月表示時は追加できません</string>
+    <string name="when_mont_back_to_yesterday">先月には戻れないんです</string>
 </resources>

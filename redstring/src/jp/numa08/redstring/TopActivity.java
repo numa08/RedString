@@ -13,6 +13,7 @@ import jp.numa08.redstring.utils.RedstringDao;
 import jp.numa08.widgets.AddButtonListener;
 import jp.numa08.widgets.AddDialogListener;
 import jp.numa08.widgets.GoodsListAdapter;
+import jp.numa08.widgets.MonthSelectoListener;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
@@ -30,9 +31,14 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @author numanuma08 起動時に表示されるActivity
+ */
+/**
+ * @author numanuma08
+ * 
  */
 /**
  * @author numanuma08
@@ -181,21 +187,66 @@ public class TopActivity extends ActionBarActivity {
 			viewSum(sum);
 		} else if (item.getItemId() == R.id.menu_month_select) {
 			// TODO 月を選ぶが選択された
-			// TODO　月選択ダイアログが出る
+			// ダイアログ生成
 			final LayoutInflater inflater = LayoutInflater.from(this);
 			final View layout = inflater.inflate(R.layout.month_select_dialog,
 					(ViewGroup) findViewById(R.id.month_select_dialog));
+			// ここから　DatePickerで日付部分がでないようにする小細工
 			final int day_id = Resources.getSystem().getIdentifier("day", "id",
 					"android");
 			final DatePicker datePicker = (DatePicker) layout
 					.findViewById(R.id.month_selector);
 			datePicker.findViewById(day_id).setVisibility(View.GONE);
+			// ここまで
 			final Builder builder = new AlertDialog.Builder(this);
 			builder.setView(layout);
 			builder.setTitle(R.string.menu_month_select);
+			builder.setPositiveButton(R.string.add_positive_button,
+					new MonthSelectoListener(this, datePicker));
+			builder.setNegativeButton(R.string.add_negative_button,
+					new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							dialog.dismiss();
+						}
+					});
+			// TODO　月選択ダイアログが出る
 			builder.show();
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * 月が選択された
+	 * 
+	 * @param year
+	 *            年
+	 * @param month
+	 *            月
+	 */
+	public void onMonthSelected(int year, int month) {
+		// TODO 表示月変更
+		final Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.MONTH, month);
+		viewDate = calendar.getTime();
+		selectedDate = DateSelector.MONTH;
+		// TODO タイトルバーの表示変更
+		setTitle(viewDate);
+		// TODO DB読み込み
+		helper = new DBHelper(getApplicationContext());
+		dao = new RedstringDao(helper.getReadableDatabase());
+		final List<Goods> goodsList = dao.findByMonth(year, month);
+		helper.close();
+		// TODO LisView表示
+		goodListView.setAdapter(new GoodsListAdapter(getApplicationContext(),
+				goodsList));
+		// TODO 合計値計算
+		final int sum = calcSum(goodsList);
+		// TODO 合計値表示
+		viewSum(sum);
 	}
 
 	/**
@@ -209,29 +260,35 @@ public class TopActivity extends ActionBarActivity {
 	 * 追加ボタンクリック時の動作
 	 */
 	public void onAddButtonClicked() {
-		// TODO ダイアログ生成
-		final LayoutInflater inflater = LayoutInflater.from(this);
-		final View layout = inflater.inflate(R.layout.add_dialog,
-				(ViewGroup) findViewById(R.id.add_dialog_root));
-		final EditText nameText = (EditText) layout.findViewById(R.id.name);
-		final EditText pliceText = (EditText) layout.findViewById(R.id.plice);
-		final Builder builder = new AlertDialog.Builder(this);
-		builder.setView(layout);
-		builder.setTitle(R.string.add_button);
-		builder.setPositiveButton(R.string.add_positive_button,
-				new AddDialogListener(this, nameText, pliceText));
-		builder.setNegativeButton(R.string.add_negative_button,
-				new OnClickListener() {
+		if (selectedDate.equals(DateSelector.DATE)) {
+			// TODO ダイアログ生成
+			final LayoutInflater inflater = LayoutInflater.from(this);
+			final View layout = inflater.inflate(R.layout.add_dialog,
+					(ViewGroup) findViewById(R.id.add_dialog_root));
+			final EditText nameText = (EditText) layout.findViewById(R.id.name);
+			final EditText pliceText = (EditText) layout
+					.findViewById(R.id.plice);
+			final Builder builder = new AlertDialog.Builder(this);
+			builder.setView(layout);
+			builder.setTitle(R.string.add_button);
+			builder.setPositiveButton(R.string.add_positive_button,
+					new AddDialogListener(this, nameText, pliceText));
+			builder.setNegativeButton(R.string.add_negative_button,
+					new OnClickListener() {
 
-					@Override
-					public void onClick(final DialogInterface dialog,
-							final int which) {
-						// TODO Auto-generated method stub
-						dialog.dismiss();
-					}
-				});
-		// TODO ダイアログ表示
-		builder.show();
+						@Override
+						public void onClick(final DialogInterface dialog,
+								final int which) {
+							// TODO Auto-generated method stub
+							dialog.dismiss();
+						}
+					});
+			// TODO ダイアログ表示
+			builder.show();
+		} else {
+			Toast.makeText(getApplicationContext(),
+					R.string.when_month_add_button, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	/**

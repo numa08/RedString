@@ -112,6 +112,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int plice=0x7f07000a;
         public static final int sum=0x7f070008;
         public static final int toggle_title=0x7f070002;
+        public static final int when_mont_back_to_yesterday=0x7f070012;
+        public static final int when_month_add_button=0x7f070011;
         public static final int yen=0x7f07000d;
     }
     public static final class style {
