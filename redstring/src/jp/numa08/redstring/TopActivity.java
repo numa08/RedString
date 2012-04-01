@@ -27,61 +27,63 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
+ * @author numanuma08 èµ·å‹•æ™‚ã«è¡¨ç¤ºã•ã‚Œã‚‹Activity
+ */
+/**
  * @author numanuma08
  * 
- *         ‹N“®‚É•\¦‚·‚éActivity
  */
 public class TopActivity extends ActionBarActivity {
 	private final transient SimpleDateFormat Date_Format = new SimpleDateFormat(
-			"yyyy”NMMŒdd“ú", Locale.JAPAN);
+			"yyyy/MM/dd", Locale.JAPAN);
 	private final transient SimpleDateFormat Month_Format = new SimpleDateFormat(
-			"yyyy”NMMŒ", Locale.JAPAN);
+			"yyyy/MM", Locale.JAPAN);
 	private transient ListView goodListView;
 	private transient Button addButton;
 	private transient DBHelper helper;
 	private transient RedstringDao dao;
 	/**
-	 * ‘I‘ğ‚³‚ê‚Ä‚¢‚é“ú•t‚Ì•`‰æƒpƒ^[ƒ“B‰Šú’l‚Íh¡“úh
+	 * ç¾åœ¨ã®æ—¥ä»˜è¡¨ç¤ºãƒ‘ã‚¿ãƒ¼ãƒ³ åˆæœŸå€¤ã¯ã€€ä»Šæ—¥
 	 */
 	private transient DateSelector selectedDate = DateSelector.Today;
 	private transient Date viewDate;
 
 	/** Called when the activity is first created. */
 	/*
-	 * {@inheritDoc} Activity¶¬‚Ì“®ì’è‹`D
+	 * {@inheritDoc} Activtyèµ·å‹•æ™‚ã«å®Ÿè¡Œ
 	 */
 	@Override
 	public void onCreate(final Bundle sInstanceState) {
 		super.onCreate(sInstanceState);
 		setContentView(R.layout.main);
 
-		// ƒŠƒXƒgƒrƒ…[‚Ì‰Šúİ’è
+		// ListViewã®åˆæœŸè¨­å®š
 		setListView();
-		// ƒ{ƒ^ƒ“‚Ìİ’è
+		// è¿½åŠ ã€€ãƒœã‚¿ãƒ³ã®åˆæœŸè¨­å®š
 		addButton = (Button) findViewById(R.id.add_button);
 		addButton.setOnClickListener(new AddButtonListener(this));
-		// ƒAƒNƒVƒ‡ƒ“ƒo[‚Ìƒ^ƒCƒgƒ‹İ’è
+		// ã‚¿ã‚¤ãƒˆãƒ«ãƒãƒ¼ã®è¡¨ç¤º
 		if (selectedDate.equals(DateSelector.Today)) {
 			viewDate = new Date();
 			setTitle(Date_Format.format(viewDate));
 		}
-		// TODO DB“Ç‚İ‚İ
+		// TODO DBèª­ã¿è¾¼ã¿
 		helper = new DBHelper(getApplicationContext());
 		dao = new RedstringDao(helper.getReadableDatabase());
 		final List<Goods> goodsList = dao.findByDate(new Date());
 		helper.close();
-		// TODO •`‰æ
+		// TODO ListViewè¡¨ç¤º
 		goodListView.setAdapter(new GoodsListAdapter(getApplicationContext(),
 				goodsList));
-		// TODO ‡Œv‚ÌŒvZ
+		// TODO åˆè¨ˆå€¤è¨ˆç®—
 		int sum = calcSum(goodsList);
-		// TODO •\¦
+		// TODO åˆè¨ˆå€¤è¡¨ç¤º
 		viewSum(sum);
 	}
 
 	private void viewSum(int sum) {
 		final TextView sumText = (TextView) findViewById(R.id.sum_plice);
-		sumText.setText(sum + "‰~");
+		sumText.setText(sum + "å††");
 	}
 
 	private int calcSum(final List<Goods> goodsList) {
@@ -93,7 +95,7 @@ public class TopActivity extends ActionBarActivity {
 	}
 
 	/**
-	 * ƒŠƒXƒgƒrƒ…[‚Ì‰Šúİ’è
+	 * ListViewã®è¨­å®š
 	 */
 	private void setListView() {
 		goodListView = (ListView) findViewById(R.id.goods_list);
@@ -103,7 +105,7 @@ public class TopActivity extends ActionBarActivity {
 	}
 
 	/*
-	 * {@inheritDoc} ƒIƒvƒVƒ‡ƒ“ƒƒjƒ…[¶¬‚Ì“®ì
+	 * {@inheritDoc} ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼ç”Ÿæˆæ™‚ã®å‹•ä½œ
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
@@ -115,7 +117,7 @@ public class TopActivity extends ActionBarActivity {
 	}
 
 	/*
-	 * {@inheritDoc} ƒIƒvƒVƒ‡ƒ“ƒƒjƒ…[‘I‘ğ‚Ì“®ì
+	 * {@inheritDoc} ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãƒ¡ãƒ‹ãƒ¥ãƒ¼é¸æŠæ™‚ã®å‹•ä½œ
 	 */
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
@@ -125,20 +127,14 @@ public class TopActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * ƒIƒvƒVƒ‡ƒ“‚©‚ç“ú•t‚ª•ÏX‚³‚ê‚½
-	 * 
-	 * @param selector
-	 *            •ÏXŒã‚Ì“ú•tƒpƒ^[ƒ“
-	 */
 	public void onDateSelected(final DateSelector selector) {
 	}
 
 	/**
-	 * ’Ç‰Áƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½
+	 * è¿½åŠ ãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‹•ä½œ
 	 */
 	public void onAddButtonClicked() {
-		// TODO ƒ_ƒCƒAƒƒO‚ğì‚é
+		// TODO ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ç”Ÿæˆ
 		final LayoutInflater inflater = LayoutInflater.from(this);
 		final View layout = inflater.inflate(R.layout.add_dialog,
 				(ViewGroup) findViewById(R.id.add_dialog_root));
@@ -148,19 +144,19 @@ public class TopActivity extends ActionBarActivity {
 		builder.setView(layout);
 		builder.setPositiveButton("OK", new AddDialogListener(this, nameText,
 				pliceText));
-		// TODO ƒ_ƒCƒAƒƒO‚ğŠJ‚­
+		// TODO ãƒ€ã‚¤ã‚¢ãƒ­ã‚°è¡¨ç¤º
 		builder.show();
 	}
 
 	/**
-	 * ’Ç‰Áƒ_ƒCƒAƒƒO‚©‚ç¤•iƒf[ƒ^‚ª’Ç‰Á‚³‚ê‚½
+	 * ãƒ‡ãƒ¼ã‚¿è¿½åŠ æ™‚ã®å‹•ä½œ
 	 */
 	public void onAddGoods(final Goods goods) {
-		// TODO DB‚É’Ç‰Á‚·‚é
+		// TODO DBèª­ã¿è¾¼ã¿
 		helper = new DBHelper(this);
 		dao = new RedstringDao(helper.getReadableDatabase());
 		dao.insert(viewDate, goods);
-		// TODO •`‰æ‚·‚é
+		// TODO ListViewã®è¡¨ç¤º
 		List<Goods> goodsList = dao.findByDate(viewDate);
 		goodListView.setAdapter(new GoodsListAdapter(this, goodsList));
 		final int sum = calcSum(goodsList);

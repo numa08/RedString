@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 
 /**
- * @author numanuma08 “ú•t•ÏXƒ_ƒCƒAƒƒO‚ÌOKƒ{ƒ^ƒ“‚ÌƒŠƒXƒi[ƒNƒ‰ƒX
+ * @author numanuma08 æ—¥ä»˜é¸æŠãƒ€ã‚¤ã‚¢ãƒ­ã‚°
  */
 public class DateSelectListener implements OnClickListener {
 	// private static final String TAG =
@@ -13,10 +13,10 @@ public class DateSelectListener implements OnClickListener {
 	private final transient TopActivity activity;
 
 	/**
-	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 * ï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
 	 * 
 	 * @param activity
-	 *            ŒÄ‚Ño‚µŒ³Activity
+	 *            å‘¼ã³å‡ºã—å…ƒã®Activity
 	 * 
 	 */
 	public DateSelectListener(final TopActivity activity) {
@@ -24,7 +24,7 @@ public class DateSelectListener implements OnClickListener {
 	}
 
 	/*
-	 * ƒNƒŠƒbƒN‚Ì“®ì {@inheritDoc}
+	 * OKãƒœã‚¿ãƒ³ã‚¯ãƒªãƒƒã‚¯æ™‚ã®å‹•ä½œ
 	 */
 	@Override
 	public void onClick(final DialogInterface dialog, final int which) {

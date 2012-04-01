@@ -20,7 +20,7 @@ public class TopActivityTest extends
 	@MediumTest
 	public void testActionbarTestOnCreate() {
 		final Activity activity = getActivity();
-		final SimpleDateFormat format = new SimpleDateFormat("yyyy”NMMŒŽdd“ú",
+		final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd",
 				Locale.JAPAN);
 		assertEquals("date is not equal", activity.getTitle(),
 				format.format(new Date()));

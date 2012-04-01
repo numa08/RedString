@@ -12,7 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * @author numanuma08 独自のListアダプター。
+ * @author numanuma08
  * 
  */
 public class GoodsListAdapter extends ArrayAdapter<Goods> {
@@ -45,7 +45,7 @@ public class GoodsListAdapter extends ArrayAdapter<Goods> {
 		}
 		final Goods goods = getItem(position);
 		holder.goodName.setText(goods.getName());
-		holder.goodPlice.setText(goods.getPlice() + "円");
+		holder.goodPlice.setText(goods.getPlice() + "蜀�");
 		return myConvertView;
 	}
 
