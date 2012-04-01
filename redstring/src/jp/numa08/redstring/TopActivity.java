@@ -1,18 +1,28 @@
 package jp.numa08.redstring;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import jp.numa08.actionbarcompat.ActionBarActivity;
 import jp.numa08.objects.Goods;
+import jp.numa08.redstring.utils.DBHelper;
+import jp.numa08.redstring.utils.RedstringDao;
+import jp.numa08.widgets.AddButtonListener;
+import jp.numa08.widgets.AddDialogListener;
 import jp.numa08.widgets.GoodsListAdapter;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,10 +37,14 @@ public class TopActivity extends ActionBarActivity {
 	private final transient SimpleDateFormat Month_Format = new SimpleDateFormat(
 			"yyyy年MM月", Locale.JAPAN);
 	private transient ListView goodListView;
+	private transient Button addButton;
+	private transient DBHelper helper;
+	private transient RedstringDao dao;
 	/**
 	 * 選択されている日付の描画パターン。初期値は”今日”
 	 */
 	private transient DateSelector selectedDate = DateSelector.Today;
+	private transient Date viewDate;
 
 	/** Called when the activity is first created. */
 	/*
@@ -43,21 +57,39 @@ public class TopActivity extends ActionBarActivity {
 
 		// リストビューの初期設定
 		setListView();
+		// ボタンの設定
+		addButton = (Button) findViewById(R.id.add_button);
+		addButton.setOnClickListener(new AddButtonListener(this));
 		// アクションバーのタイトル設定
 		if (selectedDate.equals(DateSelector.Today)) {
-			final Date now = new Date();
-			setTitle(Date_Format.format(now));
+			viewDate = new Date();
+			setTitle(Date_Format.format(viewDate));
 		}
 		// TODO DB読み込み
+		helper = new DBHelper(getApplicationContext());
+		dao = new RedstringDao(helper.getReadableDatabase());
+		final List<Goods> goodsList = dao.findByDate(new Date());
+		helper.close();
 		// TODO 描画
-		final List<Goods> goodsList = new ArrayList<Goods>();
-		goodsList.add(new Goods("昼飯", 500));
 		goodListView.setAdapter(new GoodsListAdapter(getApplicationContext(),
 				goodsList));
 		// TODO 合計の計算
+		int sum = calcSum(goodsList);
 		// TODO 表示
+		viewSum(sum);
+	}
+
+	private void viewSum(int sum) {
 		final TextView sumText = (TextView) findViewById(R.id.sum_plice);
-		sumText.setText("500円");
+		sumText.setText(sum + "円");
+	}
+
+	private int calcSum(final List<Goods> goodsList) {
+		int sum = 0;
+		for (final Goods goods : goodsList) {
+			sum += goods.getPlice();
+		}
+		return sum;
 	}
 
 	/**
@@ -93,7 +125,45 @@ public class TopActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void onDateSelected(int witch) {
+	/**
+	 * オプションから日付が変更された
+	 * 
+	 * @param selector
+	 *            変更後の日付パターン
+	 */
+	public void onDateSelected(final DateSelector selector) {
+	}
 
+	/**
+	 * 追加ボタンが押された
+	 */
+	public void onAddButtonClicked() {
+		// TODO ダイアログを作る
+		final LayoutInflater inflater = LayoutInflater.from(this);
+		final View layout = inflater.inflate(R.layout.add_dialog,
+				(ViewGroup) findViewById(R.id.add_dialog_root));
+		final EditText nameText = (EditText) layout.findViewById(R.id.name);
+		final EditText pliceText = (EditText) layout.findViewById(R.id.plice);
+		final Builder builder = new AlertDialog.Builder(this);
+		builder.setView(layout);
+		builder.setPositiveButton("OK", new AddDialogListener(this, nameText,
+				pliceText));
+		// TODO ダイアログを開く
+		builder.show();
+	}
+
+	/**
+	 * 追加ダイアログから商品データが追加された
+	 */
+	public void onAddGoods(final Goods goods) {
+		// TODO DBに追加する
+		helper = new DBHelper(this);
+		dao = new RedstringDao(helper.getReadableDatabase());
+		dao.insert(viewDate, goods);
+		// TODO 描画する
+		List<Goods> goodsList = dao.findByDate(viewDate);
+		goodListView.setAdapter(new GoodsListAdapter(this, goodsList));
+		final int sum = calcSum(goodsList);
+		viewSum(sum);
 	}
 }

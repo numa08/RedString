@@ -30,4 +30,9 @@
     </string-array>
     <string name="add_button">追加</string>
     <string name="sum">合計</string>
+    <string name="goods">商品</string>
+    <string name="plice">値段</string>
+    <string name="hint_name">お弁当</string>
+    <string name="hint_plice">500</string>
+    <string name="yen">円</string>
 </resources>
