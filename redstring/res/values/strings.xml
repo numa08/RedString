@@ -22,7 +22,7 @@
     <string name="menu_refresh">Refresh</string>
     <string name="menu_search">Search</string>
     <string name="menu_share">Share</string>
-    <string name="menu_date_select">日付選択</string>
+    <string name="menu_month_select">月選択</string>
     <string-array name="date_list">
         <item >今日</item>
         <item >指定日</item>
@@ -35,4 +35,7 @@
     <string name="hint_name">お弁当</string>
     <string name="hint_plice">500</string>
     <string name="yen">円</string>
+    <string name="menu_yesterday">昨日へ</string>
+    <string name="add_positive_button">追加</string>
+    <string name="add_negative_button">キャンセル</string>
 </resources>

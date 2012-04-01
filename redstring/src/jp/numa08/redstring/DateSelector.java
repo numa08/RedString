@@ -1,10 +1,8 @@
 package jp.numa08.redstring;
 
 /**
- * @author numanuma08 描画する日付の選択肢
+ * @author numanuma08 譌･莉倥�ｮ陦ｨ遉ｺ繝代ち繝ｼ繝ｳ
  */
 public enum DateSelector {
-	Today, // 今日
-	Fixday, // 指定日
-	Fixmonth;// 指定月
+	DATE, MONT
 }

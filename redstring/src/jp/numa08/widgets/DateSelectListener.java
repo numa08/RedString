@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 
 /**
+ * @deprecated 日付変更ダイアログの実装はやめました
  * @author numanuma08 日付選択ダイアログ
  */
 public class DateSelectListener implements OnClickListener {

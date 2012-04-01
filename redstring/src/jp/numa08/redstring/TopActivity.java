@@ -1,6 +1,7 @@
 package jp.numa08.redstring;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +15,9 @@ import jp.numa08.widgets.AddDialogListener;
 import jp.numa08.widgets.GoodsListAdapter;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,6 +39,7 @@ import android.widget.TextView;
  * 
  */
 public class TopActivity extends ActionBarActivity {
+	private final transient int YESTERDAY = -1;
 	private final transient SimpleDateFormat Date_Format = new SimpleDateFormat(
 			"yyyy/MM/dd", Locale.JAPAN);
 	private final transient SimpleDateFormat Month_Format = new SimpleDateFormat(
@@ -45,7 +51,7 @@ public class TopActivity extends ActionBarActivity {
 	/**
 	 * 現在の日付表示パターン 初期値は　今日
 	 */
-	private transient DateSelector selectedDate = DateSelector.Today;
+	private transient DateSelector selectedDate = DateSelector.DATE;
 	private transient Date viewDate;
 
 	/** Called when the activity is first created. */
@@ -63,25 +69,51 @@ public class TopActivity extends ActionBarActivity {
 		addButton = (Button) findViewById(R.id.add_button);
 		addButton.setOnClickListener(new AddButtonListener(this));
 		// タイトルバーの表示
-		if (selectedDate.equals(DateSelector.Today)) {
-			viewDate = new Date();
-			setTitle(Date_Format.format(viewDate));
-		}
+		viewDate = new Date();
+		setTitle(viewDate);
 		// TODO DB読み込み
-		helper = new DBHelper(getApplicationContext());
-		dao = new RedstringDao(helper.getReadableDatabase());
-		final List<Goods> goodsList = dao.findByDate(new Date());
-		helper.close();
+		final List<Goods> goodsList = findByDate(viewDate);
 		// TODO ListView表示
 		goodListView.setAdapter(new GoodsListAdapter(getApplicationContext(),
 				goodsList));
 		// TODO 合計値計算
-		int sum = calcSum(goodsList);
+		final int sum = calcSum(goodsList);
 		// TODO 合計値表示
 		viewSum(sum);
 	}
 
-	private void viewSum(int sum) {
+	/**
+	 * 日付をキーにデータベースから読み込む
+	 * 
+	 * @param date
+	 *            日付
+	 * @return 商品データ
+	 */
+	private List<Goods> findByDate(final Date date) {
+		helper = new DBHelper(getApplicationContext());
+		dao = new RedstringDao(helper.getReadableDatabase());
+		final List<Goods> goodsList = dao.findByDate(date);
+		helper.close();
+		return goodsList;
+	}
+
+	/**
+	 * タイトルバーの文字を設定する
+	 * 
+	 * @param date
+	 *            表示されている日付
+	 */
+	public void setTitle(final Date date) {
+		String title = null;
+		if (selectedDate.equals(DateSelector.DATE)) {
+			title = Date_Format.format(date);
+		} else {
+			title = Month_Format.format(date);
+		}
+		setTitle(title);
+	}
+
+	private void viewSum(final int sum) {
 		final TextView sumText = (TextView) findViewById(R.id.sum_plice);
 		sumText.setText(sum + "円");
 	}
@@ -122,11 +154,47 @@ public class TopActivity extends ActionBarActivity {
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		// TODO Auto-generated method stub
-		if (item.getItemId() == R.id.menu_date_select) {
+		if (item.getItemId() == R.id.menu_back_yesterday) {
+			// TODO 昨日に戻るが選択された
+			// TODO　表示時間変更
+			final Calendar calendar = Calendar.getInstance();
+			calendar.setTime(viewDate);
+			calendar.add(Calendar.DAY_OF_MONTH, YESTERDAY);
+			viewDate = calendar.getTime();
+			// TODO タイトルバーの表示変更
+			setTitle(viewDate);
+			// TODO　DB読み込み
+			final List<Goods> goodsList = findByDate(viewDate);
+			// TODO　ListView表示
+			goodListView.setAdapter(new GoodsListAdapter(
+					getApplicationContext(), goodsList));
+			// TODO　合計値計算
+			final int sum = calcSum(goodsList);
+			// TODO　表示
+			viewSum(sum);
+		} else if (item.getItemId() == R.id.menu_month_select) {
+			// TODO 月を選ぶが選択された
+			// TODO　月選択ダイアログが出る
+			final LayoutInflater inflater = LayoutInflater.from(this);
+			final View layout = inflater.inflate(R.layout.month_select_dialog,
+					(ViewGroup) findViewById(R.id.month_select_dialog));
+			final int day_id = Resources.getSystem().getIdentifier("day", "id",
+					"android");
+			final DatePicker datePicker = (DatePicker) layout
+					.findViewById(R.id.month_selector);
+			datePicker.findViewById(day_id).setVisibility(View.GONE);
+			final Builder builder = new AlertDialog.Builder(this);
+			builder.setView(layout);
+			builder.setTitle(R.string.menu_month_select);
+			builder.show();
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * @deprecated 日付選択はなくなりました
+	 * @param selector
+	 */
 	public void onDateSelected(final DateSelector selector) {
 	}
 
@@ -142,8 +210,19 @@ public class TopActivity extends ActionBarActivity {
 		final EditText pliceText = (EditText) layout.findViewById(R.id.plice);
 		final Builder builder = new AlertDialog.Builder(this);
 		builder.setView(layout);
-		builder.setPositiveButton("OK", new AddDialogListener(this, nameText,
-				pliceText));
+		builder.setTitle(R.string.add_button);
+		builder.setPositiveButton(R.string.add_positive_button,
+				new AddDialogListener(this, nameText, pliceText));
+		builder.setNegativeButton(R.string.add_negative_button,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(final DialogInterface dialog,
+							final int which) {
+						// TODO Auto-generated method stub
+						dialog.dismiss();
+					}
+				});
 		// TODO ダイアログ表示
 		builder.show();
 	}
@@ -157,7 +236,7 @@ public class TopActivity extends ActionBarActivity {
 		dao = new RedstringDao(helper.getReadableDatabase());
 		dao.insert(viewDate, goods);
 		// TODO ListViewの表示
-		List<Goods> goodsList = dao.findByDate(viewDate);
+		final List<Goods> goodsList = dao.findByDate(viewDate);
 		goodListView.setAdapter(new GoodsListAdapter(this, goodsList));
 		final int sum = calcSum(goodsList);
 		viewSum(sum);
