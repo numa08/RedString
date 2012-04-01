@@ -18,7 +18,7 @@ public class RedstringDaoTest extends AndroidTestCase {
 
 	private transient Goods goods;
 
-	private final static String NAME = "íãêH";
+	private final static String NAME = "ÊòºÈ£ü";
 	private final static int PLICE = 500;
 
 	@Override
@@ -70,6 +70,12 @@ public class RedstringDaoTest extends AndroidTestCase {
 
 		assertEquals("name is " + NAME, goods.getName(), NAME);
 		assertEquals("plice is " + PLICE, goods.getPlice(), PLICE);
+	}
 
+	public void testDelete() {
+		final Date date = new Date();
+		dao.insert(date, goods);
+		final int id = dao.delete(date, goods);
+		assertNotSame("id is not zero", id, 0);
 	}
 }

@@ -24,8 +24,18 @@ public class AddDialogListener implements OnClickListener {
 	public void onClick(final DialogInterface dialog, final int which) {
 		// TODO Auto-generated method stub
 		final String name = nameText.getText().toString();
-		final int plice = Integer.parseInt(pliceText.getText().toString());
-		final Goods goods = new Goods(name, plice);
-		activity.onAddGoods(goods);
+		final String pliceString = pliceText.getText().toString();
+		if (name.length() > 0 && pliceString.length() > 0) {
+			int plice;
+			try {
+				plice = Integer.parseInt(pliceString);
+				final Goods goods = new Goods(name, plice);
+				activity.onAddGoods(goods);
+			} catch (Exception e) {
+				// TODO: handle exception
+				dialog.dismiss();
+			}
+		}
+		dialog.dismiss();
 	}
 }

@@ -12,12 +12,12 @@ import jp.numa08.redstring.utils.DBHelper;
 import jp.numa08.redstring.utils.RedstringDao;
 import jp.numa08.widgets.AddButtonListener;
 import jp.numa08.widgets.AddDialogListener;
+import jp.numa08.widgets.DeleteDialogListener;
 import jp.numa08.widgets.GoodsListAdapter;
 import jp.numa08.widgets.MonthSelectoListener;
+import jp.numa08.widgets.NegativeButtonListener;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +26,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -34,24 +36,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * @author numanuma08 起動時に表示されるActivity
- */
-/**
- * @author numanuma08
- * 
- */
-/**
- * @author numanuma08
- * 
+ * @author numanuma08 最初に表示されるActivity
  */
 public class TopActivity extends ActionBarActivity {
+	private final transient int MAX_SIZE = 100;
 	private final transient int YESTERDAY = -1;
 	private final transient SimpleDateFormat Date_Format = new SimpleDateFormat(
 			"yyyy/MM/dd", Locale.JAPAN);
 	private final transient SimpleDateFormat Month_Format = new SimpleDateFormat(
 			"yyyy/MM", Locale.JAPAN);
 	private transient ListView goodListView;
-	private transient Button addButton;
 	private transient DBHelper helper;
 	private transient RedstringDao dao;
 	/**
@@ -70,9 +64,9 @@ public class TopActivity extends ActionBarActivity {
 		setContentView(R.layout.main);
 
 		// ListViewの初期設定
-		setListView();
+		goodListView = (ListView) findViewById(R.id.goods_list);
 		// 追加　ボタンの初期設定
-		addButton = (Button) findViewById(R.id.add_button);
+		final Button addButton = (Button) findViewById(R.id.add_button);
 		addButton.setOnClickListener(new AddButtonListener(this));
 		// タイトルバーの表示
 		viewDate = new Date();
@@ -86,6 +80,40 @@ public class TopActivity extends ActionBarActivity {
 		final int sum = calcSum(goodsList);
 		// TODO 合計値表示
 		viewSum(sum);
+		goodListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(final AdapterView<?> parent,
+					final View view, final int position, final long viewId) {
+				// TODO Auto-generated method stub
+				if (selectedDate.equals(DateSelector.DATE)) {
+					// TODO 選択されたアイテム取得
+					final ListView listView = (ListView) parent;
+					final Goods goods = (Goods) listView
+							.getItemAtPosition(position);
+					// TODO ダイアログ作成
+					final StringBuilder messageBuilder = new StringBuilder();
+					messageBuilder.append(goods.getName()).append(",")
+							.append(goods.getPlice()).append("円")
+							.append("を削除します。");
+					final Builder builder = new Builder(TopActivity.this);
+					builder.setTitle(R.string.delete_check);
+					builder.setMessage(messageBuilder.toString());
+					builder.setPositiveButton(R.string.delete_positive_button,
+							new DeleteDialogListener(TopActivity.this,
+									viewDate, goods));
+					builder.setNegativeButton(R.string.add_negative_button,
+							new NegativeButtonListener());
+					// TODO 表示
+					builder.show();
+				} else {
+					Toast.makeText(TopActivity.this,
+							R.string.when_month_delete, Toast.LENGTH_SHORT)
+							.show();
+				}
+				return false;
+			}
+		});
 	}
 
 	/**
@@ -139,16 +167,6 @@ public class TopActivity extends ActionBarActivity {
 		return sum;
 	}
 
-	/**
-	 * ListViewの設定
-	 */
-	private void setListView() {
-		goodListView = (ListView) findViewById(R.id.goods_list);
-		// final Button addButton = new Button(this);
-		// addButton.setText(getString(R.string.add_button));
-		// goodListView.addFooterView(addButton);
-	}
-
 	/*
 	 * {@inheritDoc} オプションメニュー生成時の動作
 	 */
@@ -168,23 +186,29 @@ public class TopActivity extends ActionBarActivity {
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		// TODO Auto-generated method stub
 		if (item.getItemId() == R.id.menu_back_yesterday) {
-			// TODO 昨日に戻るが選択された
-			// TODO　表示時間変更
-			final Calendar calendar = Calendar.getInstance();
-			calendar.setTime(viewDate);
-			calendar.add(Calendar.DAY_OF_MONTH, YESTERDAY);
-			viewDate = calendar.getTime();
-			// TODO タイトルバーの表示変更
-			setTitle(viewDate);
-			// TODO　DB読み込み
-			final List<Goods> goodsList = findByDate(viewDate);
-			// TODO　ListView表示
-			goodListView.setAdapter(new GoodsListAdapter(
-					getApplicationContext(), goodsList));
-			// TODO　合計値計算
-			final int sum = calcSum(goodsList);
-			// TODO　表示
-			viewSum(sum);
+			if (selectedDate.equals(DateSelector.DATE)) {
+				// TODO 昨日に戻るが選択された
+				// TODO　表示時間変更
+				final Calendar calendar = Calendar.getInstance();
+				calendar.setTime(viewDate);
+				calendar.add(Calendar.DAY_OF_MONTH, YESTERDAY);
+				viewDate = calendar.getTime();
+				// TODO タイトルバーの表示変更
+				setTitle(viewDate);
+				// TODO　DB読み込み
+				final List<Goods> goodsList = findByDate(viewDate);
+				// TODO　ListView表示
+				goodListView.setAdapter(new GoodsListAdapter(
+						getApplicationContext(), goodsList));
+				// TODO　合計値計算
+				final int sum = calcSum(goodsList);
+				// TODO　表示
+				viewSum(sum);
+			} else {
+				Toast.makeText(getApplicationContext(),
+						R.string.when_mont_back_to_yesterday,
+						Toast.LENGTH_SHORT).show();
+			}
 		} else if (item.getItemId() == R.id.menu_month_select) {
 			// TODO 月を選ぶが選択された
 			// ダイアログ生成
@@ -204,16 +228,24 @@ public class TopActivity extends ActionBarActivity {
 			builder.setPositiveButton(R.string.add_positive_button,
 					new MonthSelectoListener(this, datePicker));
 			builder.setNegativeButton(R.string.add_negative_button,
-					new OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							dialog.dismiss();
-						}
-					});
+					new NegativeButtonListener());
 			// TODO　月選択ダイアログが出る
 			builder.show();
+		} else if (item.getItemId() == android.R.id.home) {
+			// TODO 日付を今日にする
+			selectedDate = DateSelector.DATE;
+			viewDate = new Date();
+			// TODO タイトルバー更新
+			setTitle(viewDate);
+			// TODO　DB読み込み
+			final List<Goods> goodsList = findByDate(viewDate);
+			// ListView表示
+			goodListView.setAdapter(new GoodsListAdapter(
+					getApplicationContext(), goodsList));
+			// 合計値計算
+			final int sum = calcSum(goodsList);
+			// 合計値表示
+			viewSum(sum);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -226,7 +258,7 @@ public class TopActivity extends ActionBarActivity {
 	 * @param month
 	 *            月
 	 */
-	public void onMonthSelected(int year, int month) {
+	public void onMonthSelected(final int year, final int month) {
 		// TODO 表示月変更
 		final Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, year);
@@ -249,45 +281,44 @@ public class TopActivity extends ActionBarActivity {
 		viewSum(sum);
 	}
 
-	/**
-	 * @deprecated 日付選択はなくなりました
-	 * @param selector
-	 */
-	public void onDateSelected(final DateSelector selector) {
-	}
+	// /**
+	// * @deprecated 日付選択はなくなりました
+	// * @param selector
+	// */
+	// public void onDateSelected(final DateSelector selector) {
+	// }
 
 	/**
 	 * 追加ボタンクリック時の動作
 	 */
 	public void onAddButtonClicked() {
-		if (selectedDate.equals(DateSelector.DATE)) {
-			// TODO ダイアログ生成
-			final LayoutInflater inflater = LayoutInflater.from(this);
-			final View layout = inflater.inflate(R.layout.add_dialog,
-					(ViewGroup) findViewById(R.id.add_dialog_root));
-			final EditText nameText = (EditText) layout.findViewById(R.id.name);
-			final EditText pliceText = (EditText) layout
-					.findViewById(R.id.plice);
-			final Builder builder = new AlertDialog.Builder(this);
-			builder.setView(layout);
-			builder.setTitle(R.string.add_button);
-			builder.setPositiveButton(R.string.add_positive_button,
-					new AddDialogListener(this, nameText, pliceText));
-			builder.setNegativeButton(R.string.add_negative_button,
-					new OnClickListener() {
-
-						@Override
-						public void onClick(final DialogInterface dialog,
-								final int which) {
-							// TODO Auto-generated method stub
-							dialog.dismiss();
-						}
-					});
-			// TODO ダイアログ表示
-			builder.show();
+		if (goodListView.getAdapter().getCount() <= MAX_SIZE) {
+			if (selectedDate.equals(DateSelector.DATE)) {
+				// TODO ダイアログ生成
+				final LayoutInflater inflater = LayoutInflater.from(this);
+				final View layout = inflater.inflate(R.layout.add_dialog,
+						(ViewGroup) findViewById(R.id.add_dialog_root));
+				final EditText nameText = (EditText) layout
+						.findViewById(R.id.name);
+				final EditText pliceText = (EditText) layout
+						.findViewById(R.id.plice);
+				final Builder builder = new AlertDialog.Builder(this);
+				builder.setView(layout);
+				builder.setTitle(R.string.add_button);
+				builder.setPositiveButton(R.string.add_positive_button,
+						new AddDialogListener(this, nameText, pliceText));
+				builder.setNegativeButton(R.string.add_negative_button,
+						new NegativeButtonListener());
+				// TODO ダイアログ表示
+				builder.show();
+			} else {
+				Toast.makeText(getApplicationContext(),
+						R.string.when_month_add_button, Toast.LENGTH_SHORT)
+						.show();
+			}
 		} else {
-			Toast.makeText(getApplicationContext(),
-					R.string.when_month_add_button, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getApplicationContext(), R.string.over_max_size,
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -302,7 +333,43 @@ public class TopActivity extends ActionBarActivity {
 		// TODO ListViewの表示
 		final List<Goods> goodsList = dao.findByDate(viewDate);
 		goodListView.setAdapter(new GoodsListAdapter(this, goodsList));
+		helper.close();
 		final int sum = calcSum(goodsList);
 		viewSum(sum);
+	}
+
+	/**
+	 * データ削除時の処理
+	 * 
+	 * @param date
+	 *            日付
+	 * @param goods
+	 *            削除するデータ
+	 */
+	public void onDeleteDate(final Date date, final Goods goods) {
+		// TODO　データ削除
+		deleteDate(date, goods);
+		helper = new DBHelper(this);
+		dao = new RedstringDao(helper.getReadableDatabase());
+		// TODO ListViewの表示
+		final List<Goods> goodsList = dao.findByDate(viewDate);
+		helper.close();
+		goodListView.setAdapter(new GoodsListAdapter(this, goodsList));
+		final int sum = calcSum(goodsList);
+		viewSum(sum);
+	}
+
+	/**
+	 * データを削除
+	 * 
+	 * @param date
+	 *            日付
+	 * @param goods
+	 *            商品
+	 */
+	private void deleteDate(final Date date, final Goods goods) {
+		helper = new DBHelper(getApplicationContext());
+		dao = new RedstringDao(helper.getReadableDatabase());
+		dao.delete(date, goods);
 	}
 }

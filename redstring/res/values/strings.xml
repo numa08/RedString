@@ -40,4 +40,8 @@
     <string name="add_negative_button">キャンセル</string>
     <string name="when_month_add_button">月表示時は追加できません</string>
     <string name="when_mont_back_to_yesterday">先月には戻れないんです</string>
+    <string name="delete_check">確認</string>
+    <string name="when_month_delete">ここからは削除できません</string>
+    <string name="delete_positive_button">削除</string>
+    <string name="over_max_size">これ以上追加できません</string>
 </resources>

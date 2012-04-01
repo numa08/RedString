@@ -12,7 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * @author numanuma08 ƒf[ƒ^[ƒx[ƒX‚ğ‘€ì‚·‚éƒNƒ‰ƒX
+ * @author numanuma08 ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹æ“ä½œã‚¯ãƒ©ã‚¹
  * 
  */
 public class RedstringDao {
@@ -24,11 +24,11 @@ public class RedstringDao {
 	}
 
 	/**
-	 * “ú•t‚©‚çƒf[ƒ^‚ğ“¾‚é
+	 * æ—¥ä»˜ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å¾—ã‚‹
 	 * 
 	 * @param date
-	 *            “ú•t
-	 * @return ¤•i‚Æ’l’i‚ÌƒŠƒXƒg
+	 *            æ—¥ä»˜
+	 * @return å¾—ã‚‰ã‚ŒãŸãƒ‡ãƒ¼ã‚¿
 	 */
 	public List<Goods> findByDate(final Date date) {
 		final List<Goods> goodsList = new ArrayList<Goods>();
@@ -52,6 +52,13 @@ public class RedstringDao {
 		return goodsList;
 	}
 
+	/**
+	 * ã‚«ãƒ¼ã‚½ãƒ«ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å¾—ã‚‹
+	 * 
+	 * @param cursor
+	 *            ã€€ã‚«ãƒ¼ã‚½ãƒ«
+	 * @return å¾—ã‚‰ã‚ŒãŸãƒ‡ãƒ¼ã‚¿
+	 */
 	private Goods getGoodsData(final Cursor cursor) {
 		final String name = cursor.getString(0);
 		final int plice = cursor.getInt(1);
@@ -59,13 +66,13 @@ public class RedstringDao {
 	}
 
 	/**
-	 * Œ‚©‚çƒf[ƒ^‚ğ“¾‚é
+	 * å¹´ã€æœˆã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚’å¾—ã‚‹
 	 * 
 	 * @param year
-	 *            ”N
+	 *            å¹´
 	 * @param month
-	 *            Œ
-	 * @return ƒf[ƒ^‚ÌƒŠƒXƒg
+	 *            æœˆ
+	 * @return å¾—ã‚‰ã‚ŒãŸãƒ‡ãƒ¼ã‚¿
 	 */
 	public List<Goods> findByMonth(final int year, final int month) {
 		final List<Goods> goodsList = new ArrayList<Goods>();
@@ -86,13 +93,13 @@ public class RedstringDao {
 	}
 
 	/**
-	 * ƒf[ƒ^ƒx[ƒX‚É•Û‘¶‚·‚é
+	 * ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã™ã‚‹
 	 * 
 	 * @param date
-	 *            “ú•t
+	 *            æ—¥ä»˜
 	 * @param goods
-	 *            ¤•i‚Ìƒf[ƒ^
-	 * @return ƒf[ƒ^ID
+	 *            ä¿å­˜ã™ã‚‹ãƒ‡ãƒ¼ã‚¿
+	 * @return ä¿å­˜ã—ãŸID
 	 */
 	public long insert(final Date date, final Goods goods) {
 		final Calendar calendar = Calendar.getInstance();
@@ -107,5 +114,34 @@ public class RedstringDao {
 		contentValue.put(DB_COLUMNS.PLICE.name(), goods.getPlice());
 
 		return database.insert(DB_COLUMNS.REDSTRING.name(), null, contentValue);
+	}
+
+	/**
+	 * ãƒ‡ãƒ¼ã‚¿ã‚’å‰Šé™¤ã™ã‚‹
+	 * 
+	 * @param date
+	 *            æ—¥ä»˜
+	 * @param goods
+	 *            ãƒ‡ãƒ¼ã‚¿
+	 * @return å‰Šé™¤ã§ããŸã‚‰1ã€‚ã§ããªã‹ã£ãŸã‚‰ï¼
+	 */
+	public int delete(final Date date, final Goods goods) {
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		final String selection = DB_COLUMNS.YEAR + " = "
+				+ calendar.get(Calendar.YEAR) + " AND " + DB_COLUMNS.MONTH
+				+ " = " + calendar.get(Calendar.MONTH) + " AND "
+				+ DB_COLUMNS.DATE + " = " + calendar.get(Calendar.DAY_OF_MONTH)
+				+ " AND " + DB_COLUMNS.NAME + " = \"" + goods.getName()
+				+ "\" AND " + DB_COLUMNS.PLICE + " = " + goods.getPlice();
+		final String[] columns = { DB_COLUMNS.ID.name() };
+		final Cursor cursor = database.query(DB_COLUMNS.REDSTRING.name(),
+				columns, selection, null, null, null, null);
+		int dataId = 0;
+		while (cursor.moveToNext()) {
+			dataId = cursor.getInt(0);
+		}
+		return database.delete(DB_COLUMNS.REDSTRING.toString(), DB_COLUMNS.ID
+				+ " = " + dataId, null);
 	}
 }
