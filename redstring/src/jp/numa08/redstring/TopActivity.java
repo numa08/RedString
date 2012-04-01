@@ -118,6 +118,13 @@ public class TopActivity extends ActionBarActivity {
 		sumText.setText(sum + "円");
 	}
 
+	/**
+	 * 合計値を計算する
+	 * 
+	 * @param goodsList
+	 *            商品のリスト
+	 * @return 値段の合計
+	 */
 	private int calcSum(final List<Goods> goodsList) {
 		int sum = 0;
 		for (final Goods goods : goodsList) {
