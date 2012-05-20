@@ -121,6 +121,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int yen=0x7f07000d;
     }
     public static final class style {
+        public static final int ActionBar=0x7f090008;
         public static final int ActionBarCompat=0x7f090001;
         public static final int ActionBarCompatHomeItem=0x7f090007;
         public static final int ActionBarCompatItem=0x7f090006;
@@ -128,6 +129,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int ActionBarCompatProgressIndicator=0x7f090003;
         public static final int ActionBarCompatTitle=0x7f090005;
         public static final int ActionBarCompatTitleBase=0x7f090004;
+        public static final int ActionBarTitle=0x7f090009;
         public static final int AppTheme=0x7f090000;
     }
     public static final class styleable {
